@@ -1,33 +1,42 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:whoaskedmobile/product/constants/app_constants.dart';
 
+class PostHttpOverrides extends HttpOverrides {
+  @override
+  HttpClient createHttpClient(context) {
+    return super.createHttpClient(context)
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
+  }
+}
+
 final class ApiService {
   // singleton
   static final ApiService _instance = ApiService._();
-  factory ApiService() => _instance;
   ApiService._();
   static ApiService get instance => _instance;
 
-  Dio _dio = Dio(
-    BaseOptions(
-      baseUrl: AppConstants.baseUrl,
-      // receiveTimeout: const Duration(seconds: 3),
-      // connectTimeout: const Duration(seconds: 3),
-    ),
-  );
+  late final Dio _dio;
+
+  static Future<void> init() async {
+    HttpOverrides.global = PostHttpOverrides();
+    _instance._dio = Dio(BaseOptions(baseUrl: AppConstants.baseUrl));
+  }
 
   void setBearerToken(String token) {
-    // _dio.options.headers["Authorization"] = "Bearer $token";
-    _dio = Dio(
-      BaseOptions(
-        baseUrl: AppConstants.baseUrl,
-        // receiveTimeout: const Duration(seconds: 3),
-        // connectTimeout: const Duration(seconds: 3),
-        headers: {"Authorization": "Bearer $token"},
-      ),
-    );
+    _dio.options.headers["Authorization"] = "Bearer $token";
+    // _dio = Dio(
+    //   BaseOptions(
+    //     baseUrl: AppConstants.baseUrl,
+    //     // receiveTimeout: const Duration(seconds: 3),
+    //     // connectTimeout: const Duration(seconds: 3),
+    //     headers: {"Authorization": "Bearer $token"},
+    //   ),
+    // );
+    //check bad certificate
   }
 
   Future<Response<T>> get<T>(String path,

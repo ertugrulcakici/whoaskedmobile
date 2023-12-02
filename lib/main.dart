@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:whoaskedmobile/core/services/api_service.dart';
 import 'package:whoaskedmobile/view/home/home_view.dart';
 import 'package:whoaskedmobile/view/login/login_view.dart';
 import 'package:whoaskedmobile/view/splash/splash_view.dart';
 
-void main(List<String> args) {
+Future<void> main(List<String> args) async {
+  await ApiService.init();
   runApp(const App());
 }
 
