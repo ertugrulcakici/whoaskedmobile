@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:whoaskedmobile/core/services/auth_service.dart';
 
 class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
@@ -82,12 +85,28 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) {
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(
+      //     content: Text('Please fill in the form correctly'),
+      //   ),
+      // );
+      return;
+    }
+    _formKey.currentState!.save();
+
+    final String username = _formData['username']!;
+    final String password = _formData['password']!;
+
+    AuthService.instance.login(username, password).then((value) {
+      log("logged in");
+      Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+    }).onError((error, stackTrace) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please fill in the form correctly'),
+        SnackBar(
+          content: Text(error.toString().replaceAll("Exception: ", "")),
         ),
       );
-    }
+    });
 
     _formKey.currentState!.save();
   }

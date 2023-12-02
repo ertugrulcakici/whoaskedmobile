@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:whoaskedmobile/view/home/home_view.dart';
 import 'package:whoaskedmobile/view/login/login_view.dart';
+import 'package:whoaskedmobile/view/splash/splash_view.dart';
 
-void main(List<String> args) {}
+void main(List<String> args) {
+  runApp(const App());
+}
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -13,7 +17,12 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginView(),
+      initialRoute: "/",
+      routes: {
+        "/": (context) => const SplashView(),
+        "/login": (context) => const LoginView(),
+        "/home": (context) => const HomeView()
+      },
     );
   }
 }
