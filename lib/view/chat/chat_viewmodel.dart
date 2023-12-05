@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -19,37 +18,34 @@ class ChatViewModel extends ChangeNotifier {
   List<MessageModel> messages = [];
 
   ChatBoxModel chatBoxModel;
-  ChatViewModel(this.chatBoxModel);
-
-  @override
-  void dispose() {
-    log("dispose");
-    closeListener().then((value) {
-      super.dispose();
-    });
-  }
-
-  void init(ChatBoxModel chatBoxModel) {
+  ChatViewModel({required this.chatBoxModel}) {
     WebSocketChannel channel = WebSocketChannel.connect(Uri.parse(
         "${AppConstants.webSocketUrl}QueueWS?queueId=${chatBoxModel.queueId}"));
     _messageNotifier = channel.stream;
     messageSubscription = _messageNotifier!.listen((event) {
-      fetchMessages(1);
+      fetchMessages();
     });
-    fetchMessages(20);
+    fetchMessages();
+  }
+
+  @override
+  void dispose() {
+    closeListener().then((value) {
+      super.dispose();
+    });
   }
 
   Future<void> closeListener() async {
     messageSubscription?.cancel();
   }
 
-  Future<void> fetchMessages(int amount) async {
+  Future<void> fetchMessages() async {
     // Response<
     //     List<Map<String, dynamic>>> response = await ApiService.instance.get<
     //         List<Map<String, dynamic>>>(
     //     "/api/Messages/${chatBoxModel.queueId}/$amount?userId=${AuthService.instance.user!.userId}");
     Response response = await ApiService.instance.get(
-        "/api/Messages/${chatBoxModel.queueId}/$amount?userId=${AuthService.instance.user!.userId}");
+        "/api/Messages/${chatBoxModel.queueId}/1?userId=${AuthService.instance.user!.userId}");
     if (response.statusCode != 200) {
       Fluttertoast.showToast(
           msg: "Error fetching messages",
@@ -61,14 +57,35 @@ class ChatViewModel extends ChangeNotifier {
           fontSize: 16.0);
       return;
     }
-
-    messages = response.data!
-        .map((e) => MessageModel.fromJson(e))
+    messages.clear();
+    messages.addAll(response.data
+        .map((e) => MessageModel.fromJson(Map<String, dynamic>.from(e)))
         .toList()
         .reversed
         .toList()
-        .cast<MessageModel>();
-    log(messages.toString());
+        .cast<MessageModel>());
+
     notifyListeners();
+  }
+
+  Future<bool> sendMessage(String message) async {
+    Response response = await ApiService.instance.post("/api/Messages", {
+      "sender": AuthService.instance.user!.userId,
+      "queueId": chatBoxModel.queueId,
+      "mess": message,
+      "sent": DateTime.now().toUtc().toIso8601String()
+    });
+    if (response.statusCode != 200) {
+      Fluttertoast.showToast(
+          msg: "Error sending message",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return false;
+    }
+    return true;
   }
 }

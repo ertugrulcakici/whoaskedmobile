@@ -10,18 +10,27 @@ class ChatBoxWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      tileColor: chatBoxModel.seen ? Colors.white : Colors.grey[300],
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (context) => ChatView(chatBoxModel: chatBoxModel)));
       },
-      leading: const CircleAvatar(
-        child: Text("A"),
+      leading: CircleAvatar(
+        child: Text(
+          chatBoxModel.queueName[0].toUpperCase(),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
       ),
       title: Text(chatBoxModel.queueName),
-      subtitle: Text(chatBoxModel.latestMessage),
-      trailing: Text(chatBoxModel.seen ? "Seen" : "Not seen"),
+      subtitle: Text(chatBoxModel.latestMessage,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: chatBoxModel.seen
+              ? null
+              : const TextStyle(fontWeight: FontWeight.bold)),
     );
   }
 }

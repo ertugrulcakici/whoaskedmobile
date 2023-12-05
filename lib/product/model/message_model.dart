@@ -12,6 +12,10 @@ final class MessageModel {
   final String mess;
   final DateTime sent;
 
+  String get hourString {
+    return "${sent.hour.toString().padLeft(2, '0')}:${sent.minute.toString().padLeft(2, '0')}";
+  }
+
   const MessageModel({
     required this.sender,
     required this.queueId,

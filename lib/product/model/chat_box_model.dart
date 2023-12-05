@@ -19,14 +19,6 @@ class ChatBoxModel {
     required this.users,
   });
 
-  ChatBoxModel.test()
-      : queueId = 1,
-        queueName = "Group 1",
-        latestMessage = "Test",
-        ownerUsername = "Test",
-        seen = false,
-        users = List.generate(10, (index) => UserModel.test());
-
   factory ChatBoxModel.fromJson(Map<String, dynamic> json) {
     return ChatBoxModel(
       queueId: json['queueId'] as int,

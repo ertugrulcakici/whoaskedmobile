@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -32,16 +31,10 @@ class HomeViewModel extends ChangeNotifier {
         .get<Map<String, dynamic>>("/api/Users/ByUsername",
             queryParameters: {"username": AuthService.instance.username});
     if (response.statusCode == 200) {
-      // UserModel user = UserModel(
-      //   avatar: response.data!["avatar"],
-      //   userId: response.data!["userId"],
-      //   userName: response.data!["userName"],
-      // );
       List<Map<String, dynamic>> newQueues =
           (response.data!["queues"] as List).cast<Map<String, dynamic>>();
       chatBoxes = newQueues.map((e) => ChatBoxModel.fromJson(e)).toList();
       notifyListeners();
-      log("Fetched chat boxes");
     } else {
       throw Exception("Failed to fetch chat boxes");
     }

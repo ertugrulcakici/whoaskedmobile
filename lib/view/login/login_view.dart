@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -104,7 +102,6 @@ class _LoginViewState extends ConsumerState<LoginView> {
     final String password = _formData['password']!;
 
     AuthService.instance.login(username, password).then((value) {
-      log("logged in");
       Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
     }).onError((error, stackTrace) {
       ScaffoldMessenger.of(context).showSnackBar(

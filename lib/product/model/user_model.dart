@@ -17,10 +17,15 @@ final class UserModel {
     );
   }
 
-  UserModel.test()
-      : userId = 1,
-        userName = "Test",
-        avatar = "Test";
+  UserModel.system()
+      : userId = 0,
+        userName = "System",
+        avatar = "System";
+
+  UserModel.deleted()
+      : userId = -1,
+        userName = "Deleted user",
+        avatar = "Deleted";
 
   @override
   String toString() =>

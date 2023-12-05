@@ -14,7 +14,8 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
           onPressed: _showLogoutDialog, child: const Icon(Icons.logout)),
-      appBar: AppBar(title: const Text("Profile")),
+      appBar: AppBar(
+          title: Text("Profile of ${AuthService.instance.user!.userName}")),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Center(
@@ -63,24 +64,10 @@ class _ProfileViewState extends ConsumerState<ProfileView> {
 
   Widget _avatarList() {
     return Wrap(
-      children: [
-        _avatarItem(
-            "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"),
-        _avatarItem(
-            "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"),
-        _avatarItem(
-            "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"),
-        _avatarItem(
-            "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"),
-        _avatarItem(
-            "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"),
-        _avatarItem(
-            "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"),
-        _avatarItem(
-            "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"),
-        _avatarItem(
-            "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png"),
-      ],
+      children: List.generate(
+          10,
+          (index) => _avatarItem(
+              "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-circle-hd.png")),
     );
   }
 

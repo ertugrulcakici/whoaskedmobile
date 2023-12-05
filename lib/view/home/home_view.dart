@@ -68,7 +68,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
     }
 
     return ListView.builder(
-        shrinkWrap: true,
+        shrinkWrap: false,
         itemCount: chatBoxesWithoutGlobalChat.length,
         itemBuilder: (context, index) {
           ChatBoxModel chatBoxModel = chatBoxesWithoutGlobalChat[index];
