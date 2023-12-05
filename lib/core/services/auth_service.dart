@@ -25,7 +25,6 @@ final class AuthService {
 
   String? _username;
   String? get username => _username ?? _preferences.getString("username");
-  String? _password;
 
   late SharedPreferences _preferences;
 
@@ -59,11 +58,17 @@ final class AuthService {
         queryParameters: {"username": username});
 
     if (response.statusCode == 200) {
-      user = UserModel(
-        avatar: response.data!["avatar"],
-        userName: response.data!["userName"],
-        userId: response.data!["userId"],
-      );
+      try {
+        user = UserModel(
+          avatar: response.data!["avatar"],
+          userName: response.data!["userName"],
+          userId: response.data!["userId"],
+        );
+      } catch (e) {
+        throw NotLoggedInError(
+          "Error fetching user data:$e",
+        );
+      }
     } else if (response.statusCode == 401) {
       throw NotLoggedInError();
     } else {
@@ -73,7 +78,6 @@ final class AuthService {
 
   Future<void> login(String username, String password) async {
     _username = username;
-    _password = password;
     final response =
         await ApiService.instance.post<String>("/api/Users/Login", {
       "username": username,

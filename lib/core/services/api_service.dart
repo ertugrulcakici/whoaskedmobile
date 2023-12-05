@@ -1,8 +1,12 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:whoaskedmobile/core/services/navigation_service.dart';
 import 'package:whoaskedmobile/product/constants/app_constants.dart';
+
+import 'auth_service.dart';
 
 class PostHttpOverrides extends HttpOverrides {
   @override
@@ -23,7 +27,29 @@ final class ApiService {
 
   static Future<void> init() async {
     HttpOverrides.global = PostHttpOverrides();
-    _instance._dio = Dio(BaseOptions(baseUrl: AppConstants.baseUrl));
+    _instance._dio = Dio(BaseOptions(baseUrl: AppConstants.baseUrl))
+      ..interceptors.add(
+        InterceptorsWrapper(
+          onRequest: (options, handler) {
+            return handler.next(options);
+          },
+          onResponse: (response, handler) {
+            return handler.next(response);
+          },
+          onError: (DioException e, handler) {
+            if (e.response?.statusCode == 401) {
+              AuthService.instance.logout();
+              Fluttertoast.showToast(
+                  msg: "Your session has expired, please login again");
+              Navigator.pushNamedAndRemoveUntil(
+                  NavigationService.instance.currentContext!,
+                  "/login",
+                  (route) => false);
+            }
+            return handler.next(e);
+          },
+        ),
+      );
   }
 
   void setBearerToken(String token) {
@@ -52,15 +78,9 @@ final class ApiService {
 
   Future<Response<T>> post<T>(String path, Map<String, dynamic> data) async {
     try {
-      log(path);
-      log(data.toString());
-      log(_dio.options.headers.toString());
-      log(_dio.options.baseUrl);
       final Response<T> response = await _dio.post<T>(path, data: data);
-      log("response is :${response.data}");
       return response;
     } catch (e) {
-      log(e.toString());
       rethrow;
     }
   }

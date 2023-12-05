@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -20,7 +18,6 @@ class _SplashViewState extends State<SplashView> {
       AuthService.instance.fetchUserData().then((value) {
         Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
       }).onError((error, stackTrace) {
-        log(error.runtimeType.toString());
         if (error is! NotLoggedInError) {
           Fluttertoast.showToast(msg: error.toString());
         }

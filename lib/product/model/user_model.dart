@@ -1,5 +1,5 @@
 final class UserModel {
-  final String userId;
+  final int userId;
   final String userName;
   final String avatar;
 
@@ -16,4 +16,13 @@ final class UserModel {
       avatar: json['avatar'],
     );
   }
+
+  UserModel.test()
+      : userId = 1,
+        userName = "Test",
+        avatar = "Test";
+
+  @override
+  String toString() =>
+      "UserModel(userId: $userId, userName: $userName, avatar: $avatar)";
 }

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:whoaskedmobile/core/services/auth_service.dart';
 
 class LoginView extends ConsumerStatefulWidget {
@@ -27,15 +28,19 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
   Widget _form() {
     return Center(
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _usernameField(),
-            _passwordField(),
-            _loginButton(),
-          ],
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 0.1.sw),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _usernameField(),
+              _passwordField(),
+              _loginButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -43,6 +48,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
 
   Widget _usernameField() {
     return TextFormField(
+      autofocus: true,
       decoration: const InputDecoration(
         labelText: 'Username',
       ),

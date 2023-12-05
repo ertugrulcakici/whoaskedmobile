@@ -39,6 +39,8 @@ dependencies:
   shared_preferences: ^2.2.2
   font_awesome_flutter: ^10.6.0
   fluttertoast: ^8.2.4
+  web_socket_channel: ^2.4.0
+  flutter_screenutil: ^5.9.0
 
 dev_dependencies:
   flutter_test:
